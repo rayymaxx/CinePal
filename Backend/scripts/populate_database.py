@@ -1,0 +1,1 @@
+# Script to send ChromaDB with TMDB data 

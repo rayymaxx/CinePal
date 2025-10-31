@@ -1,0 +1,8 @@
+Python-dotenv 
+langchain
+langchain_community
+langchain_core
+requests 
+uvicorn 
+fastapi
+chromadb
