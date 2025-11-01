@@ -6,3 +6,4 @@ requests
 uvicorn 
 fastapi
 chromadb
+pydantic 
