@@ -7,3 +7,5 @@ uvicorn
 fastapi
 chromadb
 pydantic 
+sqlalchemy 
+sqlite3 
