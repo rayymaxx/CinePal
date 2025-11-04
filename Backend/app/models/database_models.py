@@ -1,12 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Text, ForeignKey, JSON, Float
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey, JSON, Float
+from sqlalchemy.orm import relationship
+from app.services.database import Base
 from datetime import datetime
-
-db_url = 'sqlite:///Backend/data/sqlite.db'
-
-engine = create_engine(db_url, echo=True)
-
-Base = declarative_base()
 
 # CORE USER MANAGEMENT MODELS
 class User(Base):
