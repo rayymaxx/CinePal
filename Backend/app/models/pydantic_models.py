@@ -1,11 +1,48 @@
 from pydantic import BaseModel, EmailStr, Field 
 from typing import Optional, List, Literal, TYPE_CHECKING
 from datetime import datetime
+from enum import Enum 
+
 if TYPE_CHECKING:
     from models.database_models import User 
 
 
-# Request/Response Models 
+# --- CHAIN COMMUNICATION SCHEMAS ---
+
+class IntentType(str, Enum):
+    RECOMMENDATION = "recommendation" 
+    PROFILE_UPDATE = "profile_update" 
+    CHAT = "chat" 
+    UNKNOWN = "unknown"
+
+
+class Intent(BaseModel):
+    intent_type: IntentType = Field(
+        ...,
+        description="The determined intent of the user's last message."
+    )
+    search_query: Optional[str] = Field(
+        None,
+        description="If the intent is RECOMMENDATION, this is the optimized, concrete search term (e.g., 'recent 80s sci-fi movies')."
+    )
+    preference_type: Optional[str] = Field(
+        None, 
+        description="If the intent is PROFILE_UPDATE, the type of preference (e.g., 'genre', 'actor')."
+    ) 
+    preference_value: Optional[str] = Field(
+        None, 
+        description="If the intent is PROFILE_UPDATE, the value of the preference (e.g., 'horror', 'Tom Hanks')."
+    )
+
+
+class UserContext(BaseModel):
+    context_summary: str = Field(
+        ..., 
+        description="A concise summary of the last user turn and conversation history, focused on the current request."
+    )
+
+
+# --- Request/Response Models ---
 class UserRegistrationRequest(BaseModel):
     user_name: str = Field(description="The registering user user_name")
     user_email: EmailStr 
