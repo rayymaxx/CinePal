@@ -1,14 +1,12 @@
 # Handles user profile CRUD 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session  
-from sqlalchemy.exc import IntegrityError 
 from typing import Optional, List 
 from datetime import datetime 
 
 from ..models.database_models import User, UserPreference 
 from ..models.pydantic_models import UserInDB, UserRegistrationRequest, UserProfileResponse, UserPreferenceInDB 
 from ..core.auth import get_password_hash, verify_password 
-from ..services.database import get_db 
 
 def convert_db_user_to_userindb(db_user: User) -> UserInDB:
     return UserInDB(
@@ -30,23 +28,14 @@ def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
     return db_user
 
 def create_user(db: Session, user_data: UserRegistrationRequest) -> Optional[UserInDB]:
-    user_name = user_data.user_name
-
     user_name_check = get_user_by_username(db=db, user_name=user_data.user_name)
     if user_name_check != None:
         raise HTTPException(status_code=400, detail="The username already exists!")
     
-    user_email = user_data.user_email 
-    password = user_data.password 
-    password_confirmation = user_data.password_confirmation
-
-    if password != password_confirmation:
-        raise HTTPException(status_code=400, detail="Passwords do not match!")
-
     hashed_password = get_password_hash(user_data.password) 
     user = User(
-        user_name=user_name,
-        user_email=user_email,
+        user_name=user_data.user_name,
+        user_email=user_data.user_email,
         hashed_password=hashed_password,
     )
     
@@ -54,8 +43,20 @@ def create_user(db: Session, user_data: UserRegistrationRequest) -> Optional[Use
     db.commit() 
     db.refresh(user)
 
-    converter = convert_db_user_to_userindb(db_user=user)
-    return converter 
+    return user  
+
+def authenticate_user(db: Session, user_name: str, password: str) -> Optional[User]:
+    db_user = get_user_by_username(db, user_name=user_name)
+
+    if db_user and verify_password(password, db_user.hashed_password): 
+        return db_user
+    
+    return None 
+
+def get_user_profile(db: Session, user_id: int) -> Optional[User]:
+    db_user = db.query(User).filter(User.id == user_id).one_or_none()
+
+    return db_user 
 
 def get_user_preferences(db: Session, user_id: int) -> List[UserPreferenceInDB]:
     db_preferences=db.query(UserPreference).filter(UserPreference.user_id==user_id).all()
@@ -98,12 +99,3 @@ def update_user_preference_score(db: Session, user_id: int, preference_type: str
 
     return preference_record
     
-
-def get_profile_response(db: Session, user_id: int) -> UserProfileResponse:
-    db_user = get_user_by_id(db, user_id) 
-
-    if db_user is None:
-        raise HTTPException(status_code=404, detail=f"User with ID {user_id} not found!") 
-    
-    return UserProfileResponse.from_db_model(db_user)
-
