@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from typing import Generator 
 
-db_url = 'sqlite:///Backend/data/sqlite.db'
+db_url = 'sqlite:///data/sqlite.db'
 
 engine = create_engine(
     db_url, 
@@ -27,7 +27,7 @@ def get_db() -> Generator:
 
 
 def create_all_tables():
-    import models.database_models
+    from ..models import database_models
     print(f"Attempting to create tables on {db_url}")
     Base.metadata.create_all(bind=engine)
     print("✅Database tables created successfully.")

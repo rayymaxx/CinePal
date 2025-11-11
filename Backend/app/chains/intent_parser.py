@@ -1,18 +1,41 @@
 import os 
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate 
 from langchain_huggingface.llms import HuggingFaceEndpoint 
 from langchain_core.output_parsers import PydanticOutputParser 
 from langchain_core.runnables import RunnableLambda 
 from ..models.pydantic_models import Intent, IntentType 
 
-LLM_MODEL = "mistralai/Mistral-7B-Instruct-v0.2" 
+load_dotenv() 
+
+HUGGINGFACE_API_KEY=os.getenv("HUGGINGFACE_API_KEY") 
+
+if not HUGGINGFACE_API_KEY:
+    print("❌ HUGGINGFACE_API_KEY missing in environment variables.")
+else:
+    print("✅ HUGGINGFACE_API_KEY - intent parser loaded!")
+
+LLM_MODEL = "mistralai/Mistral-7B-Instruct-v0.3" 
 
 def get_intent_parser_chain():
-    llm = HuggingFaceEndpoint(
-        repo_id=LLM_MODEL,
-        task="text-generation", 
-        model_kwargs={"temperature": 0.0, "max_length": 512} 
-    )
+    try:
+        llm = HuggingFaceEndpoint(
+            repo_id=LLM_MODEL,
+            task="text-generation", 
+            temperature=0.0,
+            max_new_tokens=512,
+            huggingfacehub_api_token=HUGGINGFACE_API_KEY, 
+        )
+    except Exception as e:
+        print(f"❌ HuggingFace model {LLM_MODEL} failed: {e}")
+        # Fallback to a simpler model
+        llm = HuggingFaceEndpoint(
+            repo_id="google/flan-t5-base",
+            task="text2text-generation", 
+            temperature=0.0,
+            max_new_tokens=512,
+            huggingfacehub_api_token=HUGGINGFACE_API_KEY, 
+        )
 
     parser = PydanticOutputParser(pydantic_object=Intent) 
 

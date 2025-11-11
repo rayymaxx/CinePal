@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timedelta, timezone 
 from typing import Optional, Any 
 from dotenv import load_dotenv
+import logging 
 
 from jose import jwt, JWTError
 from passlib.context import CryptContext 
@@ -10,9 +11,18 @@ from ..models.pydantic_models import UserInDB
 
 load_dotenv()
 
+logging.basicConfig(
+    level=logging.INFO
+)
+
 SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    logging.warning(f"❌ Missing SECRET_KEY")
+else:
+    logging.info("✅ SECRET_KEY loaded.")
+
 ALGORITHM = "HS256" 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") 
 

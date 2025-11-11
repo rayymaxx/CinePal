@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Literal, TYPE_CHECKING
 from datetime import datetime
 from enum import Enum 
+import json 
 
 if TYPE_CHECKING:
     from models.database_models import User 
@@ -146,6 +147,38 @@ class ShowData(BaseModel):
     poster_url: str 
     tmdb_rating: float 
 
+    @classmethod
+    def from_orm_model(cls, db_show):
+        def safe_json_load(data):
+            if isinstance(data, str):
+                try:
+                    loaded = json.loads(data)
+                    return loaded if isinstance(loaded, list) else []
+                except json.JSONDecodeError:
+                    return []
+            return data if isinstance(data, list) else []
+
+        release_date_str = 'N/A'
+        if isinstance(db_show.release_date, datetime):
+            release_date_str = db_show.release_date.strftime('%Y-%m-%d')
+        elif db_show.release_date:
+            release_date_str = str(db_show.release_date)
+
+
+        return cls(
+            show_id=str(db_show.show_id),
+            title=db_show.title,
+            type=db_show.type,
+            genres=safe_json_load(db_show.genres),
+            plot=db_show.plot,
+            release_date=release_date_str,
+            runtime=db_show.runtime,
+            cast=safe_json_load(db_show.cast),
+            directors=safe_json_load(db_show.directors),
+            poster_url=db_show.poster_url,
+            tmdb_rating=db_show.tmdb_rating
+        )
+
 
 class ShowRetrievalResult(BaseModel):
     shows: List[ShowData] 
@@ -153,7 +186,7 @@ class ShowRetrievalResult(BaseModel):
     search_query_used: str 
 
 
-class EnhancedShowModel(BaseModel):
+class EnhancedShowModel(ShowData):
     show_id: str 
     title: str 
     type: str 
@@ -166,7 +199,8 @@ class EnhancedShowModel(BaseModel):
     poster_url: str 
     tmdb_rating: float 
     talking_points: List[str] = Field(
-        examples=["Won 3 Emmys last week", "Trending on Twitter"]
+        examples=["Won 3 Emmys last week", "Trending on Twitter"],
+        description="Real-time news or trending topics related to the show."
     )
 
 

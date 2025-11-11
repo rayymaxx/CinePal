@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey, JSON, Float
 from sqlalchemy.orm import relationship
-from app.services.database import Base
+from ..services.database import Base
 from datetime import datetime
 
 # CORE USER MANAGEMENT MODELS
@@ -15,7 +15,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     preferences = relationship('UserPreference', back_populates='user') 
-    interactions = relationship('InteractionHistory', back_populates='user')
+    interactions = relationship('InteractionHistoryInDB', back_populates='user')
 
 
 class UserPreference(Base):
@@ -32,7 +32,7 @@ class UserPreference(Base):
 
 
 # CONVERSATION AND LEARNING MODELS 
-class InteractionHistory(Base):
+class InteractionHistoryInDB(Base):
     __tablename__ = "interaction_history"
 
     id = Column(Integer, primary_key=True)
@@ -43,10 +43,10 @@ class InteractionHistory(Base):
     timestamp = Column(DateTime, default=datetime.utcnow) 
 
     user = relationship('User', back_populates='interactions')
-    recommended_shows = relationship('InteractionShowJunction', back_populates='interaction')
+    recommended_shows = relationship('InteractionShowJunctionInDB', back_populates='interaction')
 
 
-class InteractionShowJunction(Base):
+class InteractionShowJunctionInDB(Base):
     __tablename__ = "interaction_show_junction"
 
     id = Column(Integer, primary_key=True)
@@ -54,7 +54,7 @@ class InteractionShowJunction(Base):
     show_id = Column(Integer, ForeignKey('cached_show.show_id')) 
     show_title = Column(String) 
 
-    interaction = relationship('InteractionHistory', back_populates='recommended_shows')
+    interaction = relationship('InteractionHistoryInDB', back_populates='recommended_shows')
 
 
 # SHOW METADATA AND CACHE MODEL 

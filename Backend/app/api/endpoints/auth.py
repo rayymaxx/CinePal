@@ -15,7 +15,7 @@ from ...services import user_manager
 from ...core import auth 
 from ...core.security import get_current_active_user 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30 
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 router = APIRouter(tags=["Authentication"]) 
 
@@ -83,7 +83,7 @@ def login(user_data: UserLoginRequest, db: Session = Depends(get_db)) -> Token:
     )
 
 @router.get(
-    "profile",
+    "/profile",
     response_model=UserProfileResponse,
     summary="Get the current authenticated user's profile and preferences"
 )

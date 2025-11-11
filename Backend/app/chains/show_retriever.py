@@ -3,8 +3,11 @@ from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_pinecone import PineconeVectorStore 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings 
 from langchain_core.documents import Document 
-from typing import List, Any 
+from typing import Dict, Any 
 from pinecone import Pinecone 
+
+from ..services import show_manager 
+from ..models.pydantic_models import IntentType
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
 
@@ -20,7 +23,7 @@ def get_show_retirever_chain():
         )
     except Exception as e:
         print(f"Error initializing Google Embeddings: {e}") 
-        return RunnablePassthrough.assign(retrieved_docs=RunnableLambda(lambda x: "RAG UNAVAILABLE")) 
+        return RunnablePassthrough.assign(retrieved_docs=RunnableLambda(lambda x: "RAG UNAVAILABLE: Embeddings Error")) 
     
     # Connect to pinecone vector store
     try:
@@ -34,22 +37,21 @@ def get_show_retirever_chain():
     except Exception as e:
         print(f"Error connecting to pinecone: {e}") 
         print("Falling back to a non-RAG chain.") 
-        return RunnablePassthrough.assign(retrieved_docs=RunnableLambda(lambda x: "RAG UNAVAILABLE")) 
+        return RunnablePassthrough.assign(retrieved_docs=RunnableLambda(lambda x: "RAG UNAVAILABLE: Pinecone Error")) 
     
-    def format_docs(docs: List[Document]) -> str:
-        if not docs:
-            return "No relevant cached data found."
-        
-        formatted_list = [] 
-        for doc in docs:
-            score = doc.metadata.get("score", "N/A")
-            formatted_list.append(f"[Title: {doc.metadata.get('title', 'N/A')}, Score: {score}] {doc.page_content}") 
+    def get_search_query(input_data: Dict[str, Any]) -> str:
+        parsed_intent = input_data.get("parsed_intent")
+        if parsed_intent and parsed_intent.intent_type == IntentType.RECOMMENDATION and parsed_intent.search_query:
+            return parsed_intent.search_query
+        return "" 
 
-        return "\n\n---\n\n".join(formatted_list) 
-    
     chain = (
         RunnablePassthrough.assign(
-            retrieved_docs=(lambda x: x["search_query"]) | retriever | format_docs
+            retrieved_docs=(
+                RunnableLambda(get_search_query).with_types(input_type=dict, output_type=str) 
+                | RunnableLambda(lambda query: retriever.invoke(query) if query else []) 
+                | show_manager.format_retrieved_docs 
+            )
         ).with_types(input_type=dict)
     )
-    return chain 
+    return chain

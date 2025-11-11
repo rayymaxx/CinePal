@@ -1,20 +1,39 @@
 import os 
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate 
 from langchain_core.runnables import RunnablePassthrough 
 from langchain_huggingface.llms import HuggingFaceEndpoint 
 from typing import Dict, Any 
 
-LLM_MODEL = "mistralai/Mistral-7B-Instruct-v0.2" 
+load_dotenv() 
+
+HUGGINGFACE_API_KEY=os.getenv("HUGGINGFACE_API_KEY") 
+
+if not HUGGINGFACE_API_KEY:
+    print("❌ HUGGINGFACE_API_KEY missing in environment variables.") 
+else:
+    print("✅ HUGGINGFACE_API_KEY - response generator loaded!")
+
+LLM_MODEL = "microsoft/DialoGPT-medium" 
 
 def get_response_generator_chain():
-    llm = HuggingFaceEndpoint(
-        repo_id=LLM_MODEL,
-        task="text-generation",
-        model_kwargs={
-            "temperature": 0.8, 
-            "max_length": 1024
-        }
-    )
+    try:
+        llm = HuggingFaceEndpoint(
+            repo_id=LLM_MODEL,
+            task="text-generation",
+            temperature=0.8, 
+            max_new_tokens=1024,
+            huggingfacehub_api_token=HUGGINGFACE_API_KEY,
+        )
+    except Exception as e:
+        print(f"❌ HuggingFace model {LLM_MODEL} failed: {e}")
+        llm = HuggingFaceEndpoint(
+            repo_id="google/flan-t5-base",
+            task="text2text-generation",
+            temperature=0.8, 
+            max_new_tokens=1024,
+            huggingfacehub_api_token=HUGGINGFACE_API_KEY,
+        )
 
     system_prompt = ("""
         You are 'The CinePal AI', a friendly and highly knowledgeable movie and TV show recommendation assistant. 

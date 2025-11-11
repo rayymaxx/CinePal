@@ -15,13 +15,14 @@ logging.basicConfig(
 api_key = os.getenv("TMDB_API_KEY") 
 
 if not api_key:
-    logging.error("❌ TMDB API key not configured")
+    logging.warning("❌ TMDB API key not configured")
 else:
     logging.info("✅ TMDB Api key loaded!")
 
 base_url = "https://api.themoviedb.org/3"
 
 def map_tmdb_to_showdata(data: Dict[str, Any], media_type: str) -> Optional[ShowData]:
+    """Maps raw TMDB response data to the internal ShowData Pydantic model."""
     show_id = str(data.get('id')) 
 
     if media_type == 'movie':
@@ -36,6 +37,7 @@ def map_tmdb_to_showdata(data: Dict[str, Any], media_type: str) -> Optional[Show
     if not title or not show_id:
         return None 
     
+    # Calculate Runtime
     runtime = 'N/A'
     if media_type == 'movie':
         if data.get('runtime'):
@@ -46,6 +48,7 @@ def map_tmdb_to_showdata(data: Dict[str, Any], media_type: str) -> Optional[Show
         if episode_runtimes:
             runtime = f"{episode_runtimes[0]} min (avg)"
     
+    # Parse Genres
     genres_list: List[str] = [] 
     if data.get('genres') and isinstance(data['genres'], list) and data['genres'] and isinstance(data['genres'][0], dict):
         genres_list = [g['name'] for g in data['genres']]
@@ -78,8 +81,9 @@ def map_tmdb_to_showdata(data: Dict[str, Any], media_type: str) -> Optional[Show
 
 
 def search_shows(query: str, media_type: str = 'multi') -> List[ShowData]:
+    """Searches TMDB for movies or TV shows based on a query."""
     if not api_key:
-        logging.error("TMDB Api key not configured")
+        logging.warning("TMDB API key not configured")
         return [] 
     
     endpoint = f"{base_url}/search/{media_type}" 
@@ -114,7 +118,7 @@ def search_shows(query: str, media_type: str = 'multi') -> List[ShowData]:
 
 def get_show_details(tmdb_id: int, media_type: str) -> Optional[ShowData]: 
     if not api_key:
-        logging.error("❌ TMDB api key not configured")
+        logging.warning("❌ TMDB api key not configured")
         return None
     
     if media_type not in ["movie", 'tv']:
