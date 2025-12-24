@@ -1,39 +1,22 @@
 import os 
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate 
-from langchain_core.runnables import RunnablePassthrough 
-from langchain_huggingface.llms import HuggingFaceEndpoint 
-from typing import Dict, Any 
+from langchain_core.output_parsers import StrOutputParser 
+from ..core.config import llm as GROQLLM
+
 
 load_dotenv() 
 
-HUGGINGFACE_API_KEY=os.getenv("HUGGINGFACE_API_KEY") 
+GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
 
-if not HUGGINGFACE_API_KEY:
-    print("❌ HUGGINGFACE_API_KEY missing in environment variables.") 
+if not GROQ_API_KEY:
+    print("❌ GROQ_API_KEY missing in environment variables.")
 else:
-    print("✅ HUGGINGFACE_API_KEY - response generator loaded!")
-
-LLM_MODEL = "microsoft/DialoGPT-medium" 
+    os.environ["GROQ_API_KEY"] = GROQ_API_KEY 
+    print("✅ GROQ_API_KEY - intent parser loaded and client configured!") 
 
 def get_response_generator_chain():
-    try:
-        llm = HuggingFaceEndpoint(
-            repo_id=LLM_MODEL,
-            task="text-generation",
-            temperature=0.8, 
-            max_new_tokens=1024,
-            huggingfacehub_api_token=HUGGINGFACE_API_KEY,
-        )
-    except Exception as e:
-        print(f"❌ HuggingFace model {LLM_MODEL} failed: {e}")
-        llm = HuggingFaceEndpoint(
-            repo_id="google/flan-t5-base",
-            task="text2text-generation",
-            temperature=0.8, 
-            max_new_tokens=1024,
-            huggingfacehub_api_token=HUGGINGFACE_API_KEY,
-        )
+    llm = GROQLLM 
 
     system_prompt = ("""
         You are 'The CinePal AI', a friendly and highly knowledgeable movie and TV show recommendation assistant. 
@@ -57,7 +40,8 @@ def get_response_generator_chain():
         - If no good matches found, be honest and suggest alternatives
         - Keep responses concise but informative (2-4 paragraphs typically)
         - Use emojis sparingly and naturally 🎬
-        - Don't apologize excessively or be overly formal
+        - Don't apologize excessively or be overly formal 
+        - If no data is found, politely state you couldn;t find a match and suggest alternatives. 
                      
         Your responses must be conversational, warm, and tailored to the user's profile and intent. 
         Use the provided context and profile data to generate your response.
@@ -82,7 +66,7 @@ def get_response_generator_chain():
     chain = (
         prompt 
         | llm 
-        | (lambda x: x.strip())
+        | StrOutputParser() 
     )
 
     return chain 

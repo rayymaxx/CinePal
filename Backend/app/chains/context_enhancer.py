@@ -1,46 +1,29 @@
 import os 
 from dotenv import load_dotenv
-from typing import Optional, List, Dict, Any
+from typing import Dict, Any
 
 from langchain_core.prompts import ChatPromptTemplate 
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda 
-from langchain_huggingface.llms import HuggingFaceEndpoint
-from langchain_core.output_parsers import PydanticOutputParser 
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda, Runnable 
+from langchain_core.output_parsers import PydanticOutputParser, StrOutputParser  
 
 from ..models.pydantic_models import UserContext
 from ..services import serper_client 
+from ..core.config import llm as GROQLLM
+
 
 load_dotenv() 
 
-HUGGINGFACE_API_KEY=os.getenv("HUGGINGFACE_API_KEY") 
+GROQ_API_KEY=os.getenv("GROQ_API_KEY") 
 
-if not HUGGINGFACE_API_KEY:
-    print("❌ HUGGINGFACE_API_KEY missing in environment variables.")
+if not GROQ_API_KEY:
+    print("❌ GROQ_API_KEY missing in environment variables.")
 else:
-    print("✅ HUGGINGFACE_API_KEY - context enhancer loaded!")
-
-
-LLM_MODEL = "mistralai/Mistral-7B-Instruct-v0.3" 
+    os.environ["GROQ_API_KEY"] = GROQ_API_KEY 
+    print("✅ GROQ_API_KEY - intent parser loaded and client configured!")
 
 
 def get_context_enhancer_chain():
-    try:
-        llm = HuggingFaceEndpoint(
-            repo_id=LLM_MODEL,
-            task="text-generation",
-            temperature=0.1,
-            max_new_tokens=510,
-            huggingfacehub_api_token=HUGGINGFACE_API_KEY, 
-        )
-    except Exception as e:
-        print(f"❌ HuggingFace model {LLM_MODEL} failed: {e}")
-        llm = HuggingFaceEndpoint(
-            repo_id="google/flan-t5-base",
-            task="text2text-generation",
-            temperature=0.1,
-            max_new_tokens=510,
-            huggingfacehub_api_token=HUGGINGFACE_API_KEY, 
-        ) 
+    llm = GROQLLM
 
     parser = PydanticOutputParser(pydantic_object=UserContext) 
 
@@ -80,13 +63,23 @@ def get_context_enhancer_chain():
          Analyze and summarize the context""")        
     ]).partial(format_instructions=parser.get_format_instructions()) 
 
+    def clean_json_output(text: str) -> str: 
+        if "```json" in text: 
+            return text.split("```json")[1].split("```")[0].strip() 
+        elif "```" in text: 
+            return text.split("```")[1].split("```")[0].strip()
+        return text.strip() 
+
     context_enhancer_chain = (
         RunnablePassthrough.assign(
             talking_points=RunnableLambda(get_latest_movie_news).with_types(input_type=dict, output_type=str)
         )
         | prompt 
         | llm 
-        | RunnableLambda(lambda x: x.split("```json")[1].split("```")[0].strip() if "```json" in x else x) 
+        | StrOutputParser() 
+        | RunnableLambda(clean_json_output) 
         | parser
     )
     return context_enhancer_chain
+
+
