@@ -27,7 +27,7 @@ def on_startup():
         logger.critical(f"Failed to connect to database or create tables: {e}") 
 
 origins =[
-    "*"
+    "https://cine-pal.vercel.app/"
 ]
 
 app.add_middleware(

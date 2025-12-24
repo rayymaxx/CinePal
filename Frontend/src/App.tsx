@@ -9,6 +9,7 @@ import { NotificationSystem } from './components/NotificationSystem';
 import { MobileSidebar } from './components/MobileSidebar';
 import { KeyboardHelpModal, useKeyboardShortcuts } from './components/KeyboardShortcuts';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { Dashboard } from './pages/Dashboard';
 import { ChatPage } from './pages/ChatPage';
@@ -99,9 +100,7 @@ const AppContent: React.FC = () => {
         />
         <Route 
           path="/" 
-          element={
-            <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
-          } 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />} 
         />
         <Route 
           path="*" 
