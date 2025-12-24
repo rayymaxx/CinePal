@@ -6,20 +6,19 @@ from typing import Optional, List, Dict
 
 load_dotenv() 
 
-logging.basicConfig(
-   level=logging.INFO
-)
+logger = logging.getLogger("serper_client") 
 
 api_key=os.getenv("SERPER_API_KEY")
 
-if not api_key:
-    logging.error("❌ Serper API key not configured")
-else:
-    logging.info("✅SERPER key loaded!")
-
 url = "https://google.serper.dev/search"
 
-def search_news_talking_points(query: str, num_results: int = 7):
+def search_news_talking_points(query: str, num_results: int = 7): 
+    if not api_key: 
+        logging.error("❌ Serper API key not configured") 
+        return "Search unavailable: API key missing."
+    else:
+        logging.info("✅SERPER key loaded!") 
+
     payload = json.dumps({
         "q": query,
         "num": num_results,
@@ -30,12 +29,12 @@ def search_news_talking_points(query: str, num_results: int = 7):
     }
 
     try:
-        response = requests.request("POST", url, headers=headers, data=payload)
-        response.raise_for_status()
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=10) 
+        response.raise_for_status() 
 
-        data = response.json
+        data = response.json() 
 
-        organic_results: Optional[List[Dict]] = data.get('organic')
+        organic_results: Optional[List[Dict]] = data.get('organic', [])
 
         if not organic_results:
             return f"No relevant search results found for query: '{query}'"
@@ -56,13 +55,15 @@ def search_news_talking_points(query: str, num_results: int = 7):
         compiled_points += "\nEND OF SEARCH RESULTS"
 
         return compiled_points
-
+    
+    except requests.exceptions.Timeout:
+        logger.error("Serper API timed out.")
     except requests.exceptions.HTTPError as e:
         return f"HTTP Error connecting to Serper API: {e}. Check your API key or endpoint."
     except requests.exceptions.RequestException as e:
         return f"Request Error connecting to Serper API: {e}"
     except Exception as e:
-        return f"An unexpected error occurred during search: {e}"
+        return f"An unexpected error occurred during search: {e}.\n Proceeding without real-time news."
 
 
     
