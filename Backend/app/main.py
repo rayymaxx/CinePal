@@ -33,7 +33,8 @@ def on_startup():
 origins =[
     "https://cine-pal.vercel.app/",
     "http://localhost:5173",
-    "http://localhost:5174"
+    "http://localhost:5174", 
+    "https://cine-pal.vercel.app"
 ]
 
 app.add_middleware(
