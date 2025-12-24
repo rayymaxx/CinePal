@@ -6,9 +6,9 @@ db_url = 'sqlite:///data/sqlite.db'
 
 engine = create_engine(
     db_url, 
-    echo=True,
+    echo=False,
     connect_args={"check_same_thread": False}
-)
+) 
 
 Base = declarative_base()
 
