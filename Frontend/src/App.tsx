@@ -9,12 +9,15 @@ import { NotificationSystem } from './components/NotificationSystem';
 import { MobileSidebar } from './components/MobileSidebar';
 import { KeyboardHelpModal, useKeyboardShortcuts } from './components/KeyboardShortcuts';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminProtectedRoute } from './components/AdminProtectedRoute';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { Dashboard } from './pages/Dashboard';
 import { ChatPage } from './pages/ChatPage';
 import { Settings } from './pages/Settings';
 import { LoadingPage } from './components/LoadingPage';
+import { AdminLoginPage } from './pages/AdminLoginPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { useOffline } from './hooks/useOffline';
 import { useAuthStore, useUIStore } from './store';
 
@@ -96,6 +99,19 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Settings />
             </ProtectedRoute>
+          }
+        />
+        {/* Admin Routes */}
+        <Route 
+          path="/admin/login" 
+          element={<AdminLoginPage />}
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
           }
         />
         <Route 

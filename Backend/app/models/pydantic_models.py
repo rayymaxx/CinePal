@@ -254,3 +254,56 @@ class InteractionHistory(BaseModel):
     session_id: str 
 
 
+# --- ADMIN SCHEMAS ---
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class AdminLoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    username: str
+
+
+class AdminDashboardStats(BaseModel):
+    total_users: int
+    active_users_today: int
+    total_chat_requests: int
+    total_api_requests: int
+    avg_response_time_ms: float
+    total_recommendations: int
+    error_count: int
+    peak_concurrent_users: int
+
+
+class UserActivityRecord(BaseModel):
+    id: int
+    user_id: Optional[int]
+    activity_type: str
+    timestamp: datetime
+    session_id: Optional[str]
+    activity_data: Optional[dict]
+
+
+class APIRequestRecord(BaseModel):
+    id: int
+    endpoint: str
+    method: str
+    status_code: int
+    response_time_ms: float
+    user_id: Optional[int]
+    timestamp: datetime
+    error_message: Optional[str]
+
+
+class SystemMetricsRecord(BaseModel):
+    id: int
+    metric_date: datetime
+    total_users: int
+    active_users_today: int
+    total_chat_requests: int
+    total_api_requests: int
+    avg_response_time_ms: float
+    total_recommendations_given: int
+    error_count: int
