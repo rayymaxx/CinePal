@@ -31,9 +31,9 @@ export const ChatPage: React.FC = () => {
   }));
 
   return (
-    <div className="h-screen flex bg-gradient-to-br from-transparent via-transparent to-black/5">
-      {/* Sidebar */}
-      <div className="w-80 glass border-r border-white/10 flex flex-col backdrop-blur-xl">
+    <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: currentTheme?.background || '#0f0f23' }}>
+      {/* Sidebar - Hidden on mobile, visible on desktop */}
+      <div className="hidden lg:flex w-full lg:w-80 glass border-r border-white/10 flex-col backdrop-blur-xl">
         {/* Header */}
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center justify-between mb-6">

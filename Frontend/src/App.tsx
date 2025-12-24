@@ -6,12 +6,13 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ParticleBackground } from './components/ParticleBackground';
 import { NotificationSystem } from './components/NotificationSystem';
+import { MobileSidebar } from './components/MobileSidebar';
 import { KeyboardHelpModal, useKeyboardShortcuts } from './components/KeyboardShortcuts';
-import { OnboardingTour } from './components/OnboardingTour';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { Dashboard } from './pages/Dashboard';
 import { ChatPage } from './pages/ChatPage';
+import { Settings } from './pages/Settings';
 import { LoadingPage } from './components/LoadingPage';
 import { useOffline } from './hooks/useOffline';
 import { useAuthStore, useUIStore } from './store';
@@ -20,10 +21,8 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, loading } = useAuthStore();
   const { 
     notifications, 
-    showKeyboardHelp, 
-    showOnboarding,
+    showKeyboardHelp,
     setShowKeyboardHelp,
-    setShowOnboarding,
     addNotification,
     removeNotification 
   } = useUIStore();
@@ -90,6 +89,14 @@ const AppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
         <Route 
           path="/" 
           element={
@@ -108,6 +115,9 @@ const AppContent: React.FC = () => {
         notifications={notifications}
         removeNotification={removeNotification}
       />
+
+      {/* Mobile sidebar available on all pages */}
+      <MobileSidebar />
 
       {/* Offline Indicator */}
       <AnimatePresence>
@@ -134,13 +144,7 @@ const AppContent: React.FC = () => {
         }}
       />
 
-      {isAuthenticated && (
-        <OnboardingTour
-          isOpen={showOnboarding}
-          onComplete={() => setShowOnboarding(false)}
-          onSkip={() => setShowOnboarding(false)}
-        />
-      )}
+
     </div>
   );
 };

@@ -10,10 +10,10 @@ import { MovieCard } from '../components/MovieCard';
 import { FilterOptions, Movie } from '../types';
 import { useMoviesStore, useUIStore } from '../store';
 
-// Mock data for demonstration
+// Mock data with actual TMDB poster images
 const mockMovies: Movie[] = [
   {
-    show_id: '1',
+    show_id: '603',
     title: 'The Matrix',
     type: 'movie',
     genres: ['Action', 'Sci-Fi'],
@@ -22,11 +22,11 @@ const mockMovies: Movie[] = [
     runtime: '136 min',
     cast: ['Keanu Reeves', 'Laurence Fishburne', 'Carrie-Anne Moss'],
     directors: ['The Wachowskis'],
-    poster_url: 'https://via.placeholder.com/300x450?text=The+Matrix',
+    poster_url: 'https://image.tmdb.org/t/p/original/p96dm7sCMn4VYAStA6siNz30G1r.jpg',
     tmdb_rating: 8.7,
   },
   {
-    show_id: '2',
+    show_id: '27205',
     title: 'Inception',
     type: 'movie',
     genres: ['Action', 'Thriller', 'Sci-Fi'],
@@ -35,11 +35,11 @@ const mockMovies: Movie[] = [
     runtime: '148 min',
     cast: ['Leonardo DiCaprio', 'Marion Cotillard', 'Tom Hardy'],
     directors: ['Christopher Nolan'],
-    poster_url: 'https://via.placeholder.com/300x450?text=Inception',
+    poster_url: 'https://image.tmdb.org/t/p/original/gqgwNjwjSqGkOqkE2rppogenu4v.jpg',
     tmdb_rating: 8.8,
   },
   {
-    show_id: '3',
+    show_id: '157336',
     title: 'Interstellar',
     type: 'movie',
     genres: ['Drama', 'Sci-Fi'],
@@ -48,11 +48,11 @@ const mockMovies: Movie[] = [
     runtime: '169 min',
     cast: ['Matthew McConaughey', 'Anne Hathaway', 'Jessica Chastain'],
     directors: ['Christopher Nolan'],
-    poster_url: 'https://via.placeholder.com/300x450?text=Interstellar',
+    poster_url: 'https://image.tmdb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
     tmdb_rating: 8.6,
   },
   {
-    show_id: '4',
+    show_id: '155',
     title: 'The Dark Knight',
     type: 'movie',
     genres: ['Action', 'Crime', 'Drama'],
@@ -61,7 +61,7 @@ const mockMovies: Movie[] = [
     runtime: '152 min',
     cast: ['Christian Bale', 'Heath Ledger', 'Aaron Eckhart'],
     directors: ['Christopher Nolan'],
-    poster_url: 'https://via.placeholder.com/300x450?text=The+Dark+Knight',
+    poster_url: 'https://image.tmdb.org/t/p/original/qJ2tW6WMUDux911r6m7haRef0WH.jpg',
     tmdb_rating: 9.0,
   },
 ];
@@ -79,8 +79,6 @@ export const Dashboard: React.FC = () => {
   } = useMoviesStore();
   const { showFilters, setShowFilters } = useUIStore();
 
-  // Debug logging
-  console.log('Dashboard render - user:', user, 'authLoading:', authLoading, 'currentTheme:', currentTheme);
 
   // 1. If we are still verifying the session, show a loader
   if (authLoading || !currentTheme) {
@@ -172,6 +170,15 @@ export const Dashboard: React.FC = () => {
                 <Filter size={18} className="group-hover:scale-110 transition-transform" />
                 <span className="font-medium">Filters</span>
               </button>
+
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-white/10 transition-all duration-300 group"
+                style={{ color: currentTheme.text }}
+              >
+                <Settings size={18} className="group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Settings</span>
+              </Link>
             </div>
 
             {/* User Menu */}

@@ -58,7 +58,8 @@ def map_tmdb_to_showdata(data: Dict[str, Any], media_type: str) -> Optional[Show
     directors = [d['name'] for d in data.get('crew', []) if d.get('job') == 'Director'] 
 
     poster_path = data.get('poster_path') 
-    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else 'N/A'
+    # Use our proxy endpoint instead of direct TMDB URL
+    poster_url = f"/api/images/poster/w500/{poster_path.lstrip('/')}" if poster_path else 'N/A'
 
     try: 
         release_date_str = datetime.strptime(release_date, '%Y-%m-%d').strftime('%Y-%m-%d') 

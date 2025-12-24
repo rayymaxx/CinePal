@@ -74,27 +74,6 @@ export const useSessionManager = () => {
     return () => clearInterval(interval);
   }, [sessionData]);
 
-  // Track user activity
-  useEffect(() => {
-    if (!sessionData) return;
-
-    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
-    const handleActivity = () => {
-      updateActivity();
-    };
-
-    activityEvents.forEach(event => {
-      document.addEventListener(event, handleActivity, true);
-    });
-
-    return () => {
-      activityEvents.forEach(event => {
-        document.removeEventListener(event, handleActivity, true);
-      });
-    };
-  }, [sessionData]);
-
   const createSession = useCallback((token: string) => {
     const now = Date.now();
     const session: SessionData = {
@@ -112,6 +91,9 @@ export const useSessionManager = () => {
     if (!sessionData) return;
 
     const now = Date.now();
+    // Prevent unnecessary updates if lastActivity is already recent
+    if (now - sessionData.lastActivity < ACTIVITY_CHECK_INTERVAL / 2) return;
+
     const updatedSession: SessionData = {
       ...sessionData,
       lastActivity: now,
@@ -163,6 +145,27 @@ export const useSessionManager = () => {
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, []);
+
+  // Modify useEffect for user activity tracking
+  useEffect(() => {
+    if (!sessionData) return;
+
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+    const handleActivity = () => {
+      updateActivity();
+    };
+
+    activityEvents.forEach(event => {
+      document.addEventListener(event, handleActivity, true);
+    });
+
+    return () => {
+      activityEvents.forEach(event => {
+        document.removeEventListener(event, handleActivity, true);
+      });
+    };
+  }, [sessionData, updateActivity]);
 
   return {
     sessionData,

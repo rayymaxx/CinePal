@@ -18,51 +18,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('AuthContext useEffect - Starting auth initialization');
       const token = localStorage.getItem('cinepal-token');
-      console.log('Initializing auth, token found:', !!token);
-      
+
       if (token) {
         try {
           authService.setAuthToken(token);
           const profile = await authService.getProfile();
-          console.log('Profile fetched:', profile);
           authStore.setUser(profile);
           authStore.setToken(token);
         } catch (error) {
-          console.log('Token validation failed, clearing auth state', error);
           authStore.logout();
           authService.setAuthToken(null);
           localStorage.removeItem('cinepal-token');
         }
       } else {
-        console.log('No token found, logging out');
         authStore.logout();
       }
-      
-      console.log('AuthContext - setting loading to false');
+
       authStore.setLoading(false);
     };
 
     initializeAuth();
-  }, [authStore]);
+  }, []); // Removed authStore from dependencies to prevent re-runs
 
   const login = async (credentials: LoginRequest) => {
     try {
       authStore.setLoading(true);
-      console.log('Starting login process...');
       const response = await authService.login(credentials);
-      console.log('Login response:', response);
-      
+
       authService.setAuthToken(response.access_token);
       const profileResponse = await authService.getProfile();
-      console.log('Profile response:', profileResponse);
-      
+
       authStore.setUser(profileResponse);
       authStore.setToken(response.access_token);
       localStorage.setItem('cinepal-token', response.access_token);
-      
-      console.log('Auth store updated, isAuthenticated:', authStore.isAuthenticated);
     } catch (error) {
       throw error;
     } finally {
@@ -83,10 +72,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    console.log('Logging out...');
     authStore.logout();
     localStorage.removeItem('cinepal-token');
     authService.setAuthToken(null);
+    // Redirect to login after logout
+    window.location.href = '/login';
   };
 
   return (

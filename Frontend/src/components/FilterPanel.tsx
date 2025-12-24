@@ -60,8 +60,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="glass rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            className="glass rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            style={{ background: currentTheme?.background || '#0f0f23' }}
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
@@ -73,9 +74,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-full transition-colors"
+                style={{ 
+                  background: `${currentTheme.primary}20`,
+                  color: currentTheme.primary 
+                }}
               >
-                <X size={20} style={{ color: currentTheme.text }} />
+                <X size={20} />
               </button>
             </div>
 
@@ -118,15 +123,17 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 <select
                   value={filters.genre || ''}
                   onChange={(e) => setFilters({ ...filters, genre: e.target.value || undefined })}
-                  className="w-full p-3 rounded-lg glass border-0 focus:ring-2 transition-all"
+                  className="w-full p-3 rounded-lg border-0 focus:ring-2 transition-all appearance-none cursor-pointer"
                   style={{ 
+                    backgroundColor: `${currentTheme.primary}10`,
                     color: currentTheme.text,
+                    borderColor: currentTheme.primary,
                     '--tw-ring-color': currentTheme.primary 
                   } as React.CSSProperties}
                 >
                   <option value="">All Genres</option>
                   {genres.map((genre) => (
-                    <option key={genre} value={genre}>
+                    <option key={genre} value={genre} style={{ color: '#000', backgroundColor: '#fff' }}>
                       {genre}
                     </option>
                   ))}
@@ -141,15 +148,17 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 <select
                   value={filters.year || ''}
                   onChange={(e) => setFilters({ ...filters, year: e.target.value || undefined })}
-                  className="w-full p-3 rounded-lg glass border-0 focus:ring-2 transition-all"
+                  className="w-full p-3 rounded-lg border-0 focus:ring-2 transition-all appearance-none cursor-pointer"
                   style={{ 
+                    backgroundColor: `${currentTheme.primary}10`,
                     color: currentTheme.text,
+                    borderColor: currentTheme.primary,
                     '--tw-ring-color': currentTheme.primary 
                   } as React.CSSProperties}
                 >
                   <option value="">Any Year</option>
                   {years.map((year) => (
-                    <option key={year} value={year}>
+                    <option key={year} value={year} style={{ color: '#000', backgroundColor: '#fff' }}>
                       {year}
                     </option>
                   ))}
@@ -179,7 +188,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               </div>
 
               {/* Sort Options */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-3" style={{ color: currentTheme.text }}>
                     Sort By
@@ -187,16 +196,18 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   <select
                     value={filters.sortBy || 'popularity'}
                     onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
-                    className="w-full p-3 rounded-lg glass border-0 focus:ring-2 transition-all"
+                    className="w-full p-3 rounded-lg border-0 focus:ring-2 transition-all appearance-none cursor-pointer"
                     style={{ 
+                      backgroundColor: `${currentTheme.primary}10`,
                       color: currentTheme.text,
+                      borderColor: currentTheme.primary,
                       '--tw-ring-color': currentTheme.primary 
                     } as React.CSSProperties}
                   >
-                    <option value="popularity">Popularity</option>
-                    <option value="rating">Rating</option>
-                    <option value="year">Release Year</option>
-                    <option value="title">Title</option>
+                    <option value="popularity" style={{ color: '#000', backgroundColor: '#fff' }}>Popularity</option>
+                    <option value="rating" style={{ color: '#000', backgroundColor: '#fff' }}>Rating</option>
+                    <option value="year" style={{ color: '#000', backgroundColor: '#fff' }}>Release Year</option>
+                    <option value="title" style={{ color: '#000', backgroundColor: '#fff' }}>Title</option>
                   </select>
                 </div>
 
@@ -207,14 +218,16 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   <select
                     value={filters.sortOrder || 'desc'}
                     onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value as any })}
-                    className="w-full p-3 rounded-lg glass border-0 focus:ring-2 transition-all"
+                    className="w-full p-3 rounded-lg border-0 focus:ring-2 transition-all appearance-none cursor-pointer"
                     style={{ 
+                      backgroundColor: `${currentTheme.primary}10`,
                       color: currentTheme.text,
+                      borderColor: currentTheme.primary,
                       '--tw-ring-color': currentTheme.primary 
                     } as React.CSSProperties}
                   >
-                    <option value="desc">Descending</option>
-                    <option value="asc">Ascending</option>
+                    <option value="desc" style={{ color: '#000', backgroundColor: '#fff' }}>Descending</option>
+                    <option value="asc" style={{ color: '#000', backgroundColor: '#fff' }}>Ascending</option>
                   </select>
                 </div>
               </div>

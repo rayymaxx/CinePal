@@ -98,18 +98,15 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Initialize with fallback theme to prevent undefined
   const [currentTheme, setCurrentTheme] = useState<Theme>(themes[0]);
 
-  console.log('ThemeProvider initializing - themeId:', themeId, 'currentTheme:', currentTheme);
 
   useEffect(() => {
     const theme = themes.find(t => t.id === themeId) || themes[0];
-    console.log('ThemeProvider - switching to theme:', theme.id);
     setCurrentTheme(theme);
   }, [themeId]);
 
   useEffect(() => {
     // Ensure theme is applied immediately
     if (currentTheme) {
-      console.log('ThemeProvider - applying theme styles:', currentTheme.id);
       document.body.className = currentTheme.className;
       // Fix CSS variable names to match index.css
       document.documentElement.style.setProperty('--primary', currentTheme.primary);

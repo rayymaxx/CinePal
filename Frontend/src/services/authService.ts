@@ -13,7 +13,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
     return config;
   },
   (error) => {
@@ -24,7 +23,6 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    console.log(`Response from ${response.config.url}:`, response.status);
     return response;
   },
   (error) => {
@@ -54,7 +52,6 @@ class AuthService {
 
   async login(credentials: LoginRequest): Promise<TokenResponse> {
     try {
-      console.log('Attempting login for user:', credentials.user_name);
       
       // Try form data first (OAuth2PasswordRequestForm)
       const formData = new URLSearchParams();
@@ -87,7 +84,6 @@ class AuthService {
 
   async register(userData: RegisterRequest): Promise<{ message: string }> {
     try {
-      console.log('Attempting registration for user:', userData.user_name);
       const response = await api.post('/auth/register', userData);
       console.log('Registration successful');
       return response.data;
@@ -112,7 +108,6 @@ class AuthService {
   async testConnection(): Promise<boolean> {
     try {
       const response = await api.get('/');
-      console.log('Backend connection test successful:', response.data);
       return true;
     } catch (error) {
       console.error('Backend connection test failed:', error);

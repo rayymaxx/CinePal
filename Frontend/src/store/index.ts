@@ -22,17 +22,14 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       loading: true,
       setUser: (user) => {
-        console.log('Setting user:', user);
         const isAuth = !!user;
-        console.log('Setting isAuthenticated to:', isAuth);
         set({ user, isAuthenticated: isAuth });
       },
       setToken: (token) => {
-        console.log('Setting token:', token ? 'present' : 'null');
         set({ token });
       },
       setLoading: (loading) => set({ loading }),
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+      logout: () => set({ user: null, token: null, isAuthenticated: false, loading: false }),
     }),
     {
       name: 'cinepal-auth',
@@ -40,10 +37,8 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({ user: state.user, token: state.token }),
       onRehydrateStorage: () => {
         return (state, action) => {
-          console.log('Rehydrating auth state:', state);
           if (state) {
             const hasValidAuth = !!(state.user && state.token);
-            console.log('Has valid auth:', hasValidAuth);
           }
         };
       },
@@ -266,7 +261,6 @@ interface UIStore {
   sidebarOpen: boolean;
   showFilters: boolean;
   showKeyboardHelp: boolean;
-  showOnboarding: boolean;
   notifications: Array<{
     id: string;
     type: 'success' | 'error' | 'warning' | 'info';
@@ -278,7 +272,6 @@ interface UIStore {
   setSidebarOpen: (open: boolean) => void;
   setShowFilters: (show: boolean) => void;
   setShowKeyboardHelp: (show: boolean) => void;
-  setShowOnboarding: (show: boolean) => void;
   addNotification: (notification: Omit<UIStore['notifications'][0], 'id'>) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
@@ -291,13 +284,11 @@ export const useUIStore = create<UIStore>()(
       sidebarOpen: false,
       showFilters: false,
       showKeyboardHelp: false,
-      showOnboarding: true,
       notifications: [],
       setTheme: (theme) => set({ theme }),
       setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
       setShowFilters: (showFilters) => set({ showFilters }),
       setShowKeyboardHelp: (showKeyboardHelp) => set({ showKeyboardHelp }),
-      setShowOnboarding: (showOnboarding) => set({ showOnboarding }),
       addNotification: (notification) =>
         set((state) => ({
           notifications: [
@@ -316,7 +307,6 @@ export const useUIStore = create<UIStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         theme: state.theme,
-        showOnboarding: state.showOnboarding,
       }),
     }
   )

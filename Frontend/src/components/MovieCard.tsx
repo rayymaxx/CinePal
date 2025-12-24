@@ -41,15 +41,26 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       className="glass rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
     >
       {/* Poster */}
-      <div className="relative aspect-[2/3] overflow-hidden">
+      <div className="relative aspect-[2/3] overflow-hidden bg-gray-800">
         <img
-          src={movie.poster_url || '/api/placeholder/300/450'}
+          // Use the proxy URL, but handle the null case immediately
+          src={movie.poster_url || `https://via.placeholder.com/500x750/1f2937/ffffff?text=${encodeURIComponent(movie.title)}`}
           alt={movie.title}
           className="w-full h-full object-cover"
+          loading="lazy"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = `https://via.placeholder.com/300x450/333/fff?text=${encodeURIComponent(movie.title)}`;
+            
+            // Prevent infinite loops: check if we've already tried the fallback
+            const fallbackUrl = `https://via.placeholder.com/500x750/1f2937/ffffff?text=${encodeURIComponent(movie.title)}`;
+            
+            if (target.src !== fallbackUrl) {
+              // Only log once per error, not 4,000 times!
+              console.warn(`Poster failed for ${movie.title}, switching to fallback.`);
+              target.src = fallbackUrl;
+            }
           }}
+          // Remove the onLoad console.log to keep your console clean!
         />
         
         {/* Overlay */}

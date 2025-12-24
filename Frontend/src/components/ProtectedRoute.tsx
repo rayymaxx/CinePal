@@ -19,14 +19,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
   const { isAuthenticated, loading, logout } = useAuthStore();
   
-  console.log('ProtectedRoute - Auth state:', { isAuthenticated, loading, requireAuth });
   
   // Simplified session management for now
   const isSessionValid = true; // Temporarily disable session validation
 
   // Show loading while checking authentication
   if (loading) {
-    console.log('ProtectedRoute - Showing loading');
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f0f23' }}>
         <div style={{ color: '#ffffff' }}>Loading...</div>
@@ -36,18 +34,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Redirect if authentication is required but user is not authenticated
   if (requireAuth && !isAuthenticated) {
-    console.log('ProtectedRoute - Redirecting to login');
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   // Redirect if user is authenticated but trying to access auth pages
   if (!requireAuth && isAuthenticated) {
-    console.log('ProtectedRoute - Redirecting authenticated user');
     const from = location.state?.from?.pathname || '/dashboard';
     return <Navigate to={from} replace />;
   }
 
-  console.log('ProtectedRoute - Rendering children');
   return <>{children}</>;
 };
 
