@@ -1,1 +1,531 @@
-# CinePal Frontend - AI Movie Companion\n\nA modern, feature-rich React frontend for the CinePal AI movie recommendation system with comprehensive session management, state management, and beautiful UI.\n\n## 🚀 Features\n\n### 🔐 Authentication & Security\n- **Protected Routes**: All routes are secured with comprehensive authentication checks\n- **Session Management**: 24-hour token expiration with automatic renewal on activity\n- **Session Expiry Warning**: 5-minute warning before session expires with extend/logout options\n- **Activity Tracking**: Automatic session extension on user activity\n- **Secure Token Storage**: JWT tokens with proper validation and cleanup\n\n### 🎨 Themes & UI\n- **8 Beautiful Themes**: \n  - Eccentric Blue\n  - Cinema Classic (Red & Gold)\n  - Midnight Purple\n  - Netflix Dark\n  - Retro Neon (Pink & Green)\n  - Forest Green\n  - Sunset Orange\n  - Monochrome Elegance\n- **Theme Selector**: Easy switching with live preview\n- **Glassmorphism Effects**: Modern glass-like UI elements\n- **Particle Animations**: Dynamic background particles\n- **Smooth Transitions**: Framer Motion animations throughout\n\n### 💬 Chat System\n- **AI-Powered Conversations**: Get personalized movie recommendations\n- **Session Management**: Multiple chat sessions with history\n- **Message Reactions**: React to AI responses with emojis\n- **Quick Reply Buttons**: Common movie request shortcuts\n- **Chat Export**: Download conversation history as JSON\n- **Real-time Typing**: Smooth message flow with loading animations\n\n### 🎬 Movie Features\n- **Movie Cards**: Rich display with posters, ratings, and details\n- **Watchlist**: Save movies for later viewing\n- **Favorites**: Mark movies as favorites\n- **Movie Trailers**: Embedded trailer viewing (placeholder implementation)\n- **Advanced Filtering**: Filter by genre, year, rating, type\n- **Sorting Options**: Sort by popularity, rating, year, title\n- **Search Functionality**: Find movies by title, genre, or cast\n\n### ⌨️ User Experience\n- **Keyboard Shortcuts**: Full keyboard navigation support\n  - `Ctrl+K`: Open search\n  - `Ctrl+/`: Show keyboard shortcuts\n  - `Ctrl+T`: Toggle theme selector\n  - `Ctrl+N`: New chat session\n  - `Ctrl+E`: Export chat\n  - `Ctrl+F`: Toggle filters\n  - `Ctrl+W`: Toggle watchlist\n  - `Escape`: Close modals\n- **Onboarding Tour**: Interactive guide for new users\n- **Offline Support**: PWA capabilities with service worker\n- **Responsive Design**: Mobile-first approach\n- **Loading Animations**: Custom movie-themed loaders (popcorn, film reel, etc.)\n\n### 🔧 State Management\n- **Zustand Stores**: Comprehensive state management\n  - Auth Store: User authentication and session\n  - Chat Store: Chat sessions and messages\n  - Movies Store: Movies, watchlist, favorites, filters\n  - UI Store: Theme, notifications, modal states\n- **Persistent Storage**: Local storage integration\n- **Optimistic Updates**: Smooth user interactions\n\n### 📱 Progressive Web App\n- **Service Worker**: Offline functionality\n- **App Manifest**: Installable web app\n- **Caching Strategy**: Smart caching for better performance\n- **Offline Notifications**: User feedback when offline/online\n\n### 🎯 Advanced Features\n- **Custom Notifications**: Themed notification system\n- **Session Expiry Management**: Automatic cleanup and warnings\n- **Route Protection**: Comprehensive security for all routes\n- **Error Boundaries**: Graceful error handling\n- **Performance Optimized**: Lazy loading and code splitting\n\n## 🛠️ Technology Stack\n\n- **React 18** with TypeScript\n- **Vite** for fast development and building\n- **Tailwind CSS** for styling\n- **Framer Motion** for animations\n- **Zustand** for state management\n- **React Router** for navigation\n- **Axios** for API communication\n- **Lucide React** for icons\n- **React Hotkeys Hook** for keyboard shortcuts\n\n## 📦 Installation\n\n```bash\n# Install dependencies\nnpm install\n\n# Start development server\nnpm run dev\n\n# Build for production\nnpm run build\n\n# Preview production build\nnpm run preview\n```\n\n## 🔧 Configuration\n\n### Environment Variables\nCreate a `.env` file in the root directory:\n\n```env\nVITE_API_BASE_URL=http://localhost:8000\n```\n\n### Backend Integration\nThe frontend is designed to work with the CinePal FastAPI backend:\n- Authentication endpoints: `/auth/register`, `/auth/token`, `/auth/profile`\n- Chat endpoint: `/api/chat`\n- CORS enabled for frontend domain\n\n## 🎨 Theming\n\nThe application supports 8 different themes with consistent styling:\n\n```typescript\n// Theme structure\ninterface Theme {\n  id: string;\n  name: string;\n  primary: string;    // Main brand color\n  secondary: string;  // Secondary accent\n  accent: string;     // Additional accent\n  background: string; // Background color\n  text: string;       // Text color\n  className: string;  // CSS class name\n}\n```\n\n## 🔐 Security Features\n\n### Session Management\n- 24-hour session duration\n- Automatic extension on user activity\n- 5-minute expiry warning\n- Secure token storage and validation\n- Automatic cleanup on logout/expiry\n\n### Route Protection\n- All routes require authentication\n- Automatic redirects for unauthorized access\n- Session validation on route changes\n- Protected route HOC for easy implementation\n\n## 📱 PWA Features\n\n### Service Worker\n- Caches static assets\n- Offline fallback pages\n- Background sync capabilities\n- Cache management and cleanup\n\n### Manifest\n- App icons and metadata\n- Installation prompts\n- Standalone app experience\n- Theme color integration\n\n## 🎯 State Management\n\n### Store Structure\n```typescript\n// Auth Store\n- user: User | null\n- token: string | null\n- isAuthenticated: boolean\n- loading: boolean\n\n// Chat Store\n- sessions: Record<string, ChatMessage[]>\n- currentSessionId: string | null\n- loading: boolean\n\n// Movies Store\n- movies: Movie[]\n- watchlist: Movie[]\n- favorites: Movie[]\n- filters: FilterOptions\n- searchQuery: string\n\n// UI Store\n- theme: string\n- notifications: Notification[]\n- modal states: boolean flags\n```\n\n## 🚀 Performance Optimizations\n\n- **Code Splitting**: Lazy-loaded routes and components\n- **Image Optimization**: Placeholder images with error handling\n- **Caching**: Smart caching strategies for API responses\n- **Debounced Search**: Optimized search input handling\n- **Virtual Scrolling**: Efficient rendering of large lists\n- **Memoization**: React.memo and useMemo for expensive operations\n\n## 🎨 Animation System\n\n### Custom Animations\n- **Popcorn Loading**: Bouncing popcorn animation\n- **Film Reel**: Rotating film reel spinner\n- **Movie Ticket**: Sliding ticket animation\n- **Clapperboard**: Opening/closing clapperboard\n- **Projector Beam**: Animated light beam effect\n\n### Framer Motion Integration\n- Page transitions\n- Component animations\n- Gesture handling\n- Layout animations\n- Stagger effects\n\n## 📋 Component Architecture\n\n```\nsrc/\n├── components/          # Reusable UI components\n│   ├── ChatInterface.tsx\n│   ├── MovieCard.tsx\n│   ├── ThemeSelector.tsx\n│   ├── FilterPanel.tsx\n│   ├── LoadingAnimation.tsx\n│   ├── NotificationSystem.tsx\n│   ├── KeyboardShortcuts.tsx\n│   ├── OnboardingTour.tsx\n│   ├── ParticleBackground.tsx\n│   ├── ProtectedRoute.tsx\n│   └── SessionExpiryWarning.tsx\n├── contexts/            # React contexts\n│   ├── AuthContext.tsx\n│   └── ThemeContext.tsx\n├── hooks/              # Custom hooks\n│   ├── useOffline.ts\n│   └── useSessionManager.ts\n├── pages/              # Page components\n│   ├── LoginPage.tsx\n│   ├── Dashboard.tsx\n│   └── ChatPage.tsx\n├── services/           # API services\n│   ├── authService.ts\n│   └── chatService.ts\n├── store/              # Zustand stores\n│   └── index.ts\n├── types/              # TypeScript types\n│   └── index.ts\n└── utils/              # Utility functions\n```\n\n## 🔍 Testing\n\n```bash\n# Run tests\nnpm run test\n\n# Run tests with coverage\nnpm run test:coverage\n\n# Run E2E tests\nnpm run test:e2e\n```\n\n## 📈 Monitoring & Analytics\n\n- Error boundary implementation\n- Performance monitoring hooks\n- User interaction tracking\n- Session analytics\n- Offline usage metrics\n\n## 🤝 Contributing\n\n1. Fork the repository\n2. Create a feature branch\n3. Make your changes\n4. Add tests if applicable\n5. Submit a pull request\n\n## 📄 License\n\nThis project is licensed under the MIT License.\n\n## 🙏 Acknowledgments\n\n- React team for the amazing framework\n- Tailwind CSS for the utility-first approach\n- Framer Motion for smooth animations\n- Zustand for simple state management\n- All the open-source contributors\n\n---\n\n**CinePal Frontend** - Where AI meets cinema in a beautiful, secure, and feature-rich experience! 🎬✨
+# CinePal Frontend - AI Movie Companion
+
+A modern, responsive React 19 frontend for the CinePal AI movie recommendation system. Built with TypeScript, Tailwind CSS, and Framer Motion, featuring comprehensive authentication, state management, and a beautiful glassmorphic UI.
+
+## 🎯 Overview
+
+CinePal Frontend is a feature-rich web application that provides users with AI-powered movie recommendations, interactive chat sessions, personalized watchlists, and a customizable theme system. The application emphasizes security, performance, and user experience with modern React patterns and best practices.
+
+## ✨ Key Features
+
+### 🔐 Authentication & Authorization
+- **Secure JWT Authentication**: Token-based authentication with secure storage
+- **Protected Routes**: Role-based access control and route protection
+- **Session Management**: 24-hour configurable session duration
+- **Automatic Token Refresh**: Seamless token management on activity
+- **Logout Protection**: Secure cleanup on logout or session expiry
+
+### 🎨 Theme System
+- **8 Curated Themes**:
+  - Eccentric Blue (Default)
+  - Cinema Classic (Red & Gold)
+  - Midnight Purple
+  - Netflix Dark
+  - Retro Neon (Pink & Cyan)
+  - Forest Green
+  - Sunset Orange
+  - Monochrome Elegance
+- **Live Theme Switching**: Instant theme changes without page reload
+- **Persistent Theme Selection**: Automatic theme restoration
+- **Glassmorphic Design**: Modern glass-effect UI components
+- **Smooth Transitions**: Beautiful animations on theme changes
+
+### 💬 AI Chat System
+- **Interactive AI Conversations**: Natural language movie discussions
+- **Session Management**: Multiple independent chat sessions
+- **Persistent Chat History**: Auto-save conversations to localStorage
+- **Message Export**: Download chat history as JSON format
+- **Real-time Feedback**: Loading states and typing indicators
+- **Dynamic Responses**: AI-powered personalized recommendations
+
+### 🎬 Movie Management
+- **Rich Movie Cards**: 
+  - High-quality poster images
+  - IMDb/TMDB ratings display
+  - Genre and cast information
+  - Release dates and runtime
+- **Watchlist Feature**: Save movies for later
+- **Advanced Filtering**:
+  - Filter by genre, year, rating, type
+  - Multiple sorting options (popularity, rating, year, title)
+  - Search by title, genre, or cast member
+- **Responsive Grid**: Adaptive layout for mobile, tablet, and desktop
+
+### ⌨️ Keyboard Navigation
+- **Global Shortcuts**:
+  - `Ctrl+/` or `Cmd+/`: Show keyboard help
+  - `Escape`: Close modals
+  - Custom application shortcuts
+- **Accessibility First**: Full keyboard navigation support
+- **Screen Reader Support**: Semantic HTML and ARIA labels
+
+### 📱 Mobile Experience
+- **Responsive Design**: Mobile-first approach
+- **Mobile Sidebar**: Easy navigation on mobile devices
+- **Touch Optimized**: Large touch targets for mobile
+- **Offline Support**: PWA capabilities with service worker
+- **Progressive Enhancement**: Works on all device sizes
+
+### 🔔 Notifications
+- **Themed Notifications**: Matches current app theme
+- **Multiple Types**: Success, error, warning, info messages
+- **Auto-dismiss**: Configurable auto-hide duration
+- **Stacking**: Multiple notifications displayed simultaneously
+- **User Feedback**: Visual feedback for all actions
+
+### 🚀 Performance Features
+- **Lazy Loading**: Code splitting and route-based lazy loading
+- **Image Optimization**: Placeholder handling and lazy image loading
+- **Memoization**: Optimized component rendering with React.memo
+- **Debounced Inputs**: Optimized search and filter handling
+- **Efficient State**: Minimal re-renders with proper dependency management
+
+### 🎥 Loading Animations
+- **Custom Loaders**:
+  - Popcorn animation
+  - Film reel spinner
+  - Movie ticket animation
+  - Clapperboard animation
+  - Projector beam effect
+- **Smooth Transitions**: Framer Motion-powered animations
+- **Visual Feedback**: Loading states for all async operations
+
+## 🏗️ Architecture
+
+### Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/              # Reusable UI components
+│   │   ├── ChatInterface.tsx    # Chat interface with message handling
+│   │   ├── MovieCard.tsx        # Individual movie card component
+│   │   ├── Dashboard.tsx        # Main dashboard page
+│   │   ├── FilterPanel.tsx      # Advanced movie filtering
+│   │   ├── KeyboardShortcuts.tsx# Keyboard shortcut handler
+│   │   ├── LoadingAnimation.tsx # Custom loading spinners
+│   │   ├── LoadingPage.tsx      # Full-page loading state
+│   │   ├── MobileSidebar.tsx    # Mobile navigation sidebar
+│   │   ├── NotificationSystem.tsx# Toast notification system
+│   │   ├── ParticleBackground.tsx# Animated background
+│   │   ├── ProtectedRoute.tsx   # Auth-protected route wrapper
+│   │   ├── SessionExpiryWarning.tsx # Session warning modal
+│   │   └── ThemeSelector.tsx    # Theme switching UI
+│   │
+│   ├── contexts/                # React Context providers
+│   │   ├── AuthContext.tsx      # Authentication state & logic
+│   │   └── ThemeContext.tsx     # Theme state & utilities
+│   │
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useOffline.ts        # Offline detection hook
+│   │   └── useSessionManager.ts # Session management hook
+│   │
+│   ├── pages/                   # Page-level components
+│   │   ├── LoginPage.tsx        # Login & registration
+│   │   ├── Dashboard.tsx        # Home dashboard
+│   │   ├── ChatPage.tsx         # AI chat interface
+│   │   └── Settings.tsx         # User settings
+│   │
+│   ├── services/                # API communication
+│   │   ├── authService.ts       # Auth API calls
+│   │   └── chatService.ts       # Chat API calls
+│   │
+│   ├── store/                   # Zustand state management
+│   │   └── index.ts             # All store definitions
+│   │
+│   ├── types/                   # TypeScript type definitions
+│   │   └── index.ts             # Shared types & interfaces
+│   │
+│   ├── App.tsx                  # Root component
+│   ├── main.tsx                 # Entry point
+│   ├── index.css                # Global styles
+│   └── App.css                  # App-specific styles
+│
+├── public/                      # Static assets
+│   ├── manifest.json            # PWA manifest
+│   └── sw.js                    # Service worker
+│
+├── vite.config.ts               # Vite configuration
+├── tailwind.config.js           # Tailwind CSS config
+├── tsconfig.json                # TypeScript config
+├── package.json                 # Dependencies
+└── README.md                    # This file
+```
+
+### State Management (Zustand)
+
+The application uses Zustand for centralized state management with persistence:
+
+#### Auth Store
+```typescript
+{
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
+  setLoading: (loading: boolean) => void;
+  logout: () => void;
+}
+```
+
+#### Chat Store
+```typescript
+{
+  sessions: Record<string, ChatMessage[]>;
+  currentSessionId: string | null;
+  loading: boolean;
+  addMessage: (sessionId: string, message: ChatMessage) => void;
+  setCurrentSession: (sessionId: string) => void;
+  createNewSession: () => string;
+  clearSession: (sessionId: string) => void;
+  clearAllSessions: () => void;
+  exportSession: (sessionId: string) => void;
+}
+```
+
+#### Movies Store
+```typescript
+{
+  movies: Movie[];
+  watchlist: Movie[];
+  favorites: Movie[];
+  filters: FilterOptions;
+  searchQuery: string;
+  loading: boolean;
+  addToWatchlist: (movie: Movie) => void;
+  removeFromWatchlist: (movieId: string) => void;
+  isInWatchlist: (movieId: string) => boolean;
+  setFilters: (filters: FilterOptions) => void;
+  setSearchQuery: (query: string) => void;
+}
+```
+
+#### UI Store
+```typescript
+{
+  theme: string;
+  sidebarOpen: boolean;
+  showFilters: boolean;
+  showKeyboardHelp: boolean;
+  notifications: Notification[];
+  setTheme: (theme: string) => void;
+  setSidebarOpen: (open: boolean) => void;
+  addNotification: (notification: Notification) => void;
+  removeNotification: (id: string) => void;
+}
+```
+
+### Data Flow
+
+```
+App.tsx (Root)
+  ├── ThemeProvider (Wraps entire app)
+  ├── AuthProvider (Manages auth state)
+  └── Router
+      ├── ProtectedRoute
+      │   ├── Dashboard (Movies)
+      │   ├── ChatPage (AI Chat)
+      │   └── Settings
+      └── LoginPage (Public)
+```
+
+## 🛠️ Technology Stack
+
+| Technology | Purpose | Version |
+|-----------|---------|---------|
+| React | UI Framework | 19.2.0 |
+| TypeScript | Type Safety | 5.9.3 |
+| Vite | Build Tool | 7.2.4 |
+| Tailwind CSS | Styling | 4.1.18 |
+| Framer Motion | Animations | 12.23.26 |
+| Zustand | State Management | 5.0.9 |
+| React Router | Navigation | 7.11.0 |
+| Axios | HTTP Client | 1.13.2 |
+| Lucide React | Icons | 0.562.0 |
+| React Hot Toast | Notifications | 2.6.0 |
+| React Hotkeys Hook | Keyboard Shortcuts | 5.2.1 |
+
+## 📥 Installation & Setup
+
+### Prerequisites
+- Node.js 18.0 or higher
+- npm 9.0 or higher
+- Backend API running (see Backend README)
+
+### Installation Steps
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd frontend
+
+# 2. Install dependencies
+npm install
+
+# 3. Create environment configuration
+# No env file needed for development - uses defaults
+
+# 4. Start development server
+npm run dev
+
+# 5. Open browser
+# Navigate to http://localhost:5173
+```
+
+### Build for Production
+
+```bash
+# Build the application
+npm run build
+
+# Preview production build
+npm run preview
+
+# Preview is available at http://localhost:4173
+```
+
+## 🔧 Configuration
+
+### Vite Configuration (`vite.config.ts`)
+
+The development server includes proxy configuration for seamless API integration:
+
+```typescript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api/, '/api'),
+    },
+    '/auth': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    }
+  }
+}
+```
+
+### Tailwind Configuration (`tailwind.config.js`)
+
+Customized for CinePal design system with theme variables and color schemes.
+
+### TypeScript Configuration (`tsconfig.json`)
+
+- Strict mode enabled
+- ES2020 target
+- JSX React Automatic Runtime
+- Module resolution: ES modules
+
+## 🚀 Development Workflow
+
+### Available Scripts
+
+```bash
+# Start development server with HMR
+npm run dev
+
+# Build for production
+npm run build
+
+# Run ESLint
+npm run lint
+
+# Preview production build locally
+npm run preview
+```
+
+### Development Tips
+
+1. **Hot Module Replacement (HMR)**: Changes are instantly reflected in the browser
+2. **Source Maps**: Available for debugging
+3. **Component Library**: Reusable components in `src/components`
+4. **Custom Hooks**: Reusable logic in `src/hooks`
+5. **Type Safety**: Full TypeScript support
+
+## 🔐 Security Considerations
+
+### Authentication Flow
+
+1. User logs in with credentials
+2. Backend returns JWT token
+3. Token stored in localStorage
+4. Token included in all API requests (Authorization header)
+5. Token automatically cleared on logout
+6. Session expiry managed server-side
+
+### Protected Routes
+
+All routes except `/login` require authentication via `ProtectedRoute` component:
+
+```tsx
+<ProtectedRoute requireAuth={true}>
+  <Dashboard />
+</ProtectedRoute>
+```
+
+### CORS & API Security
+
+- Vite proxy handles CORS during development
+- Production deployment requires CORS configuration on backend
+- Secure token transmission via Authorization headers
+
+## 📱 Mobile & PWA
+
+### Mobile Optimization
+
+- Responsive Tailwind breakpoints
+- Touch-optimized components
+- Mobile sidebar for navigation
+- Viewport meta tags configured
+
+### Progressive Web App
+
+- Service worker for offline support
+- App manifest for installation
+- Cache strategies for assets
+- Offline fallback pages
+
+## 🎨 Theming Guide
+
+### Adding a New Theme
+
+1. Define theme in `contexts/ThemeContext.tsx`:
+
+```typescript
+const themes: Theme[] = [
+  {
+    id: 'my-theme',
+    name: 'My Theme',
+    primary: '#FF6B6B',
+    secondary: '#4ECDC4',
+    accent: '#FFE66D',
+    background: '#1A1A2E',
+    text: '#FFFFFF',
+    className: 'theme-my-theme',
+  },
+  // ... other themes
+];
+```
+
+2. Use theme colors in components:
+
+```tsx
+<div style={{ backgroundColor: currentTheme.background, color: currentTheme.text }}>
+  Themed content
+</div>
+```
+
+## 🧪 Testing
+
+Currently, the project supports ESLint for code quality:
+
+```bash
+npm run lint
+```
+
+Future testing setup:
+- Unit tests with Vitest
+- Component tests with React Testing Library
+- E2E tests with Playwright
+
+## 📊 Performance Optimization
+
+### Code Splitting
+- Route-based lazy loading with React.lazy
+- Dynamic imports for heavy components
+
+### Image Optimization
+- Lazy loading with loading="lazy"
+- Placeholder images for fallback
+- WebP support where available
+
+### State Management
+- Zustand for minimal overhead
+- Selective subscriptions to store changes
+- Middleware for persistence only when needed
+
+### Rendering
+- React.memo for pure components
+- useCallback for stable function references
+- useMemo for expensive computations
+- Proper dependency arrays in hooks
+
+## 🐛 Debugging
+
+### Browser DevTools
+- React Developer Tools extension
+- Redux DevTools (Zustand compatible)
+- Network tab for API debugging
+- Console for error tracking
+
+### Application Logs
+- Auth flow logging
+- API request/response logging
+- Component render logging (development only)
+- Error boundaries for crash prevention
+
+## 📚 API Integration
+
+### Auth Service (`services/authService.ts`)
+
+```typescript
+// Login
+await authService.login({ user_name, password });
+
+// Register
+await authService.register({ user_name, user_email, password, password_confirmation });
+
+// Get Profile
+await authService.getProfile();
+
+// Set Auth Token
+authService.setAuthToken(token);
+```
+
+### Chat Service (`services/chatService.ts`)
+
+```typescript
+// Send Message
+await chatService.sendMessage(message, sessionId);
+
+// Get Chat History
+await chatService.getChatHistory(sessionId);
+```
+
+## 🤝 Contributing
+
+### Code Style
+- TypeScript strict mode enforced
+- ESLint configuration for code quality
+- Tailwind CSS for consistent styling
+- Prettier for code formatting
+
+### Commit Guidelines
+- Clear, descriptive commit messages
+- Feature branches for new features
+- Pull requests with detailed descriptions
+
+### Component Guidelines
+- Functional components with hooks
+- TypeScript interfaces for props
+- Reusable and composable design
+- Proper error handling
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- React team for the amazing framework
+- Tailwind CSS for utility-first styling
+- Framer Motion for beautiful animations
+- Zustand for elegant state management
+- Vite for lightning-fast development
+
+---
+
+**CinePal Frontend** - Your AI-powered movie companion experience! 🎬✨
