@@ -286,6 +286,54 @@ body {
   background: var(--background);
   color: var(--text);
   overflow-x: hidden;
+  letter-spacing: 0.3px;
+}
+
+/* Enhanced typography for chat messages */
+p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Message formatting utilities */
+.message-heading {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.message-list-item {
+  padding-left: 1rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.message-paragraph {
+  line-height: 1.65;
+  margin: 0.75rem 0;
+}
+
+/* Enhanced scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Ensure full height */

@@ -38,15 +38,14 @@ export const useAuthStore = create<AuthStore>()(
       name: 'cinepal-auth',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ user: state.user, token: state.token }),
-      onRehydrateStorage: () => (state) => {
-        console.log('Rehydrating auth state:', state);
-        if (state) {
-          const hasValidAuth = !!(state.user && state.token);
-          console.log('Has valid auth:', hasValidAuth);
-          set({ isAuthenticated: hasValidAuth, loading: false });
-        } else {
-          set({ loading: false });
-        }
+      onRehydrateStorage: () => {
+        return (state, action) => {
+          console.log('Rehydrating auth state:', state);
+          if (state) {
+            const hasValidAuth = !!(state.user && state.token);
+            console.log('Has valid auth:', hasValidAuth);
+          }
+        };
       },
     }
   )
