@@ -1,0 +1,31 @@
+{
+  "name": "CinePal - AI Movie Companion",
+  "short_name": "CinePal",
+  "description": "Your AI-powered movie and TV show recommendation companion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0066ff",
+  "theme_color": "#0066ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230066ff'/%3E%3Ctext x='50' y='60' font-size='40' text-anchor='middle' fill='white'%3E🎬%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230066ff'/%3E%3Ctext x='50' y='60' font-size='40' text-anchor='middle' fill='white'%3E🎬%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["entertainment", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800'%3E%3Crect width='400' height='800' fill='%23f0f9ff'/%3E%3Ctext x='200' y='400' font-size='24' text-anchor='middle' fill='%230066ff'%3ECinePal Screenshot%3C/text%3E%3C/svg%3E",
+      "sizes": "400x800",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ]
+}", "path": "d:\\Code\\CinePal\\Frontend\\public\\manifest.json"}]
