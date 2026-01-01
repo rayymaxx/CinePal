@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session 
 
 from ...services.database import get_db 
+from ...services import history_manager
 from ...chains.main_chain import get_movie_assistant_chain 
 from ...core.security import get_current_active_user 
 from ...models.database_models import User as UserORM 
@@ -74,7 +75,12 @@ def handle_chat(
         final_response = result.get("response", "An error occured during response generation.") 
         retrieved_docs_raw = result.get("retrieved_docs", "") 
 
-        suggested_shows = extract_suggested_titles(retrieved_docs_raw) 
+        suggested_shows = extract_suggested_titles(retrieved_docs_raw)
+        
+        # Generate session name from first AI response if this is a new session
+        session_name = None
+        if not request.session_id:  # New session
+            session_name = history_manager.generate_session_name(final_response) 
 
         return ChatMessageResponse(
             session_id=session_id,

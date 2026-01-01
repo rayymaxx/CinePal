@@ -40,6 +40,7 @@ class InteractionHistoryInDB(Base):
     user_message = Column(Text)
     ai_response = Column(Text) 
     session_id = Column(String) # to group messages from the same conversation 
+    session_name = Column(String, nullable=True, default=None) # auto-generated from first AI response
     timestamp = Column(DateTime, default=datetime.utcnow) 
 
     user = relationship('User', back_populates='interactions')

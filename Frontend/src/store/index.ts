@@ -47,13 +47,22 @@ export const useAuthStore = create<AuthStore>()(
 );
 
 // Chat Store
+interface ChatSession {
+  id: string;
+  name: string;
+  messages: ChatMessage[];
+  lastActivity: string;
+}
+
 interface ChatStore {
-  sessions: Record<string, ChatMessage[]>;
+  sessions: Record<string, ChatSession>;
   currentSessionId: string | null;
   loading: boolean;
   addMessage: (sessionId: string, message: ChatMessage) => void;
   setCurrentSession: (sessionId: string) => void;
   createNewSession: () => string;
+  updateSessionName: (sessionId: string, name: string) => void;
+  loadSessionHistory: (sessionId: string, messages: ChatMessage[]) => void;
   clearSession: (sessionId: string) => void;
   clearAllSessions: () => void;
   setLoading: (loading: boolean) => void;
@@ -67,21 +76,65 @@ export const useChatStore = create<ChatStore>()(
       currentSessionId: null,
       loading: false,
       addMessage: (sessionId, message) =>
-        set((state) => ({
-          sessions: {
-            ...state.sessions,
-            [sessionId]: [...(state.sessions[sessionId] || []), message],
-          },
-        })),
+        set((state) => {
+          const session = state.sessions[sessionId];
+          if (session) {
+            return {
+              sessions: {
+                ...state.sessions,
+                [sessionId]: {
+                  ...session,
+                  messages: [...(session.messages || []), message],
+                  lastActivity: new Date().toISOString(),
+                },
+              },
+            };
+          }
+          return state;
+        }),
       setCurrentSession: (sessionId) => set({ currentSessionId: sessionId }),
       createNewSession: () => {
         const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         set((state) => ({
-          sessions: { ...state.sessions, [sessionId]: [] },
+          sessions: {
+            ...state.sessions,
+            [sessionId]: {
+              id: sessionId,
+              name: 'New Chat',
+              messages: [],
+              lastActivity: new Date().toISOString(),
+            },
+          },
           currentSessionId: sessionId,
         }));
         return sessionId;
       },
+      updateSessionName: (sessionId, name) =>
+        set((state) => {
+          const session = state.sessions[sessionId];
+          if (session) {
+            return {
+              sessions: {
+                ...state.sessions,
+                [sessionId]: { ...session, name },
+              },
+            };
+          }
+          return state;
+        }),
+      loadSessionHistory: (sessionId, messages) =>
+        set((state) => {
+          const session = state.sessions[sessionId];
+          if (session) {
+            return {
+              sessions: {
+                ...state.sessions,
+                [sessionId]: { ...session, messages },
+              },
+            };
+          }
+          return state;
+        }),
       clearSession: (sessionId) =>
         set((state) => {
           const { [sessionId]: removed, ...remainingSessions } = state.sessions;
@@ -94,11 +147,12 @@ export const useChatStore = create<ChatStore>()(
       setLoading: (loading) => set({ loading }),
       exportSession: (sessionId) => {
         const { sessions } = get();
-        const sessionData = sessions[sessionId];
-        if (sessionData) {
+        const session = sessions[sessionId];
+        if (session) {
           const dataStr = JSON.stringify({
             sessionId,
-            messages: sessionData,
+            name: session.name,
+            messages: session.messages,
             exportedAt: new Date().toISOString(),
           }, null, 2);
           const dataBlob = new Blob([dataStr], { type: 'application/json' });

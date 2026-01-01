@@ -17,15 +17,28 @@ def save_interaction(
         session_id: str, 
         user_message: str, 
         ai_response: str, 
-        recommended_shows: List[Tuple[str, str]] 
+        recommended_shows: List[Tuple[str, str]],
+        session_name: str = None 
 ) -> None:
-    new_interaction = InteractionHistoryORM(
-        user_id=user_id,
-        user_message=user_message,
-        ai_response=ai_response,
-        session_id=session_id,
-        timestamp=datetime.utcnow()
-    )
+    # Check if session_name column exists
+    try:
+        new_interaction = InteractionHistoryORM(
+            user_id=user_id,
+            user_message=user_message,
+            ai_response=ai_response,
+            session_id=session_id,
+            session_name=session_name,
+            timestamp=datetime.utcnow()
+        )
+    except Exception:
+        # Fallback without session_name if column doesn't exist
+        new_interaction = InteractionHistoryORM(
+            user_id=user_id,
+            user_message=user_message,
+            ai_response=ai_response,
+            session_id=session_id,
+            timestamp=datetime.utcnow()
+        )
 
     for show_id, show_title in recommended_shows:
         try:
@@ -49,6 +62,22 @@ def save_interaction(
     except Exception as e:
         db.rollback() 
         logging.error(f"❌ Failed to save interaction: {e}") 
+
+
+def generate_session_name(ai_response: str) -> str:
+    """Generate a session name from the first AI response"""
+    import re
+    
+    # Extract first sentence or meaningful phrase
+    sentences = re.split(r'[.!?]', ai_response)
+    first_sentence = sentences[0].strip() if sentences else ai_response
+    
+    # Limit to 50 characters and clean up
+    session_name = first_sentence[:50].strip()
+    if len(first_sentence) > 50:
+        session_name += "..."
+    
+    return session_name or "New Chat"
 
 
 def get_chat_history(db: Session, user_id: int, session_id: str, limit: int = 10) -> str:

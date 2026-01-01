@@ -6,6 +6,7 @@ import { chatService } from '../services/chatService';
 import { ChatMessage, ChatRequest } from '../types';
 import { LoadingAnimation } from './LoadingAnimation';
 import { useNotifications } from './NotificationSystem';
+import { useChatStore } from '../store';
 
 const quickReplies = [
   "Recommend something funny",
@@ -34,6 +35,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentTheme } = useTheme();
   const { addNotification } = useNotifications();
+  const { sessions, addMessage, updateSessionName } = useChatStore();
+
+  // Load messages from store when session changes
+  useEffect(() => {
+    if (sessionId && sessions[sessionId] && sessions[sessionId].messages) {
+      setMessages(sessions[sessionId].messages);
+    } else {
+      setMessages([]);
+    }
+  }, [sessionId, sessions]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,6 +65,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     };
 
     setMessages(prev => [...prev, userMessage]);
+    addMessage(currentSessionId || '', userMessage);
     setInputValue('');
     setLoading(true);
 
@@ -79,6 +91,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      addMessage(currentSessionId || response.session_id, aiMessage);
+      
+      // Update session name if this is the first AI response
+      if ((messages || []).length === 1 && currentSessionId) {
+        const sessionName = response.response.split('.')[0].slice(0, 50) + (response.response.length > 50 ? '...' : '');
+        updateSessionName(currentSessionId, sessionName);
+      }
     } catch (error: any) {
       addNotification({
         type: 'error',
@@ -142,7 +161,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-between p-5 glass border-b"
+        className="flex items-center justify-between p-5 glass border-b flex-shrink-0"
         style={{ borderColor: `${currentTheme.primary}40` }}
       >
         <div className="flex items-center gap-3">
@@ -179,7 +198,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-5">
         <AnimatePresence>
-          {messages.map((message) => (
+          {(messages || []).map((message) => (
             <MessageBubble
               key={message.id}
               message={message}
@@ -205,11 +224,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
 
       {/* Quick Replies */}
-      {messages.length === 0 && (
+      {(messages || []).length === 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 border-t"
+          className="p-6 border-t flex-shrink-0"
           style={{ borderColor: `${currentTheme.primary}40` }}
         >
           <div className="flex items-center gap-2 mb-4">
@@ -249,7 +268,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-6 border-t"
+        className="p-6 border-t flex-shrink-0"
         style={{ borderColor: `${currentTheme.primary}40` }}
       >
         <div className="flex gap-3">
@@ -568,7 +587,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
         {/* Timestamp */}
         <div className="text-xs opacity-50 mt-2 px-1" style={{ color: currentTheme.text }}>
-          {message.timestamp.toLocaleTimeString()}
+          {new Date(message.timestamp).toLocaleTimeString()}
         </div>
       </div>
     </motion.div>

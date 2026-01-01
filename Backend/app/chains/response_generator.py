@@ -41,7 +41,8 @@ def get_response_generator_chain():
         - Keep responses concise but informative (2-4 paragraphs typically)
         - Use emojis sparingly and naturally 🎬
         - Don't apologize excessively or be overly formal 
-        - If no data is found, politely state you couldn't find matches and suggest trying a different search term
+        - If no data is found, politely state you couldn't find matches and suggest trying a different search term 
+        - ALWAYS GIVE UP TO DATE MOVIES< PRIORITIZE THE MOST RECENT RELEASES, ESPECIALLY FROM THE LAST 5 YEARS.
                      
         Your responses must be conversational, warm, and tailored to the user's profile and intent. 
         Use the provided context and profile data to generate your response.
@@ -51,7 +52,7 @@ def get_response_generator_chain():
         \nConversation Context: {context_summary}
         \nUser Intent: {parsed_intent}
         \n\n--- INSTRUCTIONS ---
-        \n1. If RECOMMENDATION: Suggest one or more shows from 'Retrieved Movie Data' and explain why they match the 'User Profile'. If no data is found, politely state you couldn't find matches and ask for clarification or suggest trying different keywords.
+        \n1. If RECOMMENDATION: Suggest one or more shows from 'Retrieved Movie Data' and explain why they match the 'User Profile'. If no data is found, politely state you couldn't find matches and ask for clarification or suggest trying different keywords. Prioritize TMDB search results over general recommendations.
         \n2. If PROFILE_UPDATE: Acknowledge the update enthusiastically and confirm understanding (e.g., 'Got it, I'll remember you like Sci-Fi!').
         \n3. If CHAT: Engage naturally in conversation while steering back to movies when appropriate.
         \n4. If UNKNOWN: Politely ask for clarification.
